@@ -1,0 +1,35 @@
+{
+    "database": {
+        "username": "root",
+        "password": "root",
+        "host": "localhost",
+        "port": 3306,
+        "name": "train"
+    },
+    "redis": {
+        "servers": {
+            "redis-00": "127.0.0.1:6379"
+        },
+        "flush_all_on_start": false
+    },
+    "elasticsearch": {
+        "host": "http://localhost:9200",
+        "basic_auth": true,
+        "username": "elastic",
+        "password": "changeme"
+    },
+    "sncf_api": {
+        "host": "http://api.transilien.com",
+        "username": "xxx",
+        "password": "xxx",
+        "headers": {
+            "content_type": "application/vnd.sncf.transilien.od.depart+xml;vers=1.0",
+            "accept": "application/vnd.sncf.transilien.od.depart+xml;vers=1.0"
+        }
+    },
+    "sniffer": {
+        "max_call_per_wave": 2,
+        "second_between_call": 10,
+        "log_level": 5
+    }
+}
