@@ -3,11 +3,11 @@ package model
 import (
 	"fmt"
 
+	"github.com/Eraac/train-sniffer/utils"
 	rediscache "github.com/go-redis/cache"
 	"github.com/go-redis/redis"
 	"github.com/spf13/viper"
 	"github.com/vmihailenco/msgpack"
-	"gitlab.com/abtasty/rc/utils"
 )
 
 const (
