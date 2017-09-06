@@ -67,9 +67,12 @@ func wave(c <-chan *model.Station) func() {
 					return // error already logged in metadata.Request
 				}
 
-				if len(passages) > 0 {
-					cj <- job{station: *station, passages: passages, UUID: md.UUID}
+				if len(passages) == 0 {
+					station.Ban(viper.GetInt("sniffer.ban.no_passage"))
+					return
 				}
+
+				cj <- job{station: *station, passages: passages, UUID: md.UUID}
 			}()
 		}
 

@@ -28,6 +28,9 @@
         }
     },
     "sniffer": {
+        "ban": {
+            "no_passage": 3
+        },
         "max_call_per_wave": 2,
         "second_between_call": 10,
         "log_level": 5

@@ -8,11 +8,13 @@ import (
 	"github.com/go-redis/redis"
 	"github.com/spf13/viper"
 	"github.com/vmihailenco/msgpack"
+	"time"
 )
 
 const (
-	keyTrainCode = "train-code-%s"
-	keyPassage   = "passage-station_id-%d-train_id-%d"
+	keyTrainCode  = "train-code-%s"
+	keyPassage    = "passage-station_id-%d-train_id-%d"
+	keyBanStation = "ban-station-%d"
 )
 
 type cacheModel struct{}
@@ -59,6 +61,10 @@ func (c cacheModel) buildKeyPassage(s Station, t Train) string {
 	return fmt.Sprintf(keyPassage, s.ID, t.ID)
 }
 
+func (c cacheModel) buildKeyBanStation(s Station) string {
+	return fmt.Sprintf(keyBanStation, s.ID)
+}
+
 func (c cacheModel) getTrain(key string) (*Train, error) {
 	train := &Train{}
 
@@ -101,4 +107,19 @@ func (c cacheModel) set(key string, obj interface{}) error {
 		Object:     obj,
 		Expiration: -1,
 	})
+}
+
+func (c cacheModel) setBan(key string, h int) error {
+	return ring.Set(key, true, time.Hour * time.Duration(h)).Err()
+}
+
+func (c cacheModel) IsKeyExist(key string) bool {
+	exist, err := ring.Exists(key).Result()
+
+	if err != nil {
+		utils.Error(err.Error())
+		return false
+	}
+
+	return bool(exist > 0)
 }

@@ -64,6 +64,16 @@ func (s *Station) Update() error {
 	return db.Model(s).Update("is_realtime").Error
 }
 
+// Ban station from pool for h hours
+func (s *Station) Ban(h int) error {
+	return cache.setBan(cache.buildKeyBanStation(*s), h)
+}
+
+// IsBan return true if station is banned
+func (s *Station) IsBan() bool {
+	return cache.IsKeyExist(cache.buildKeyBanStation(*s))
+}
+
 func (s *Station) String() string {
 	return fmt.Sprintf("[station] id: %d - name: %s - UIC: %s", s.ID, s.Name, s.UIC)
 }
@@ -90,7 +100,12 @@ func StationsDistributor() (<-chan *Station, error) {
 
 		i := 0
 		for {
-			c <- stations[i]
+			s := stations[i]
+
+			if !s.IsBan() {
+				c <- s
+			}
+
 			i++
 
 			if i == length {
