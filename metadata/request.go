@@ -46,7 +46,7 @@ func (r *Request) getMappings() (string, string) {
 					},
 					"count_passage": {"type": "integer"},
 					"status_code":   {"type": "integer"},
-					"send_at":       {"type": "date", "format": "yyyy-MM-dd HH:mm:ss"},
+					"send_at":       {"type": "date", "format": "yyyy-MM-dd HH:mm:ss Z"},
 					"response_body": {"type": "text"},
 					"error":         {"type": "text"}
 				}
@@ -85,7 +85,7 @@ func (r Request) MarshalJSON() ([]byte, error) {
 		Station:      station{ID: r.Station.ID, Name: r.Station.Name, UIC: r.Station.UIC},
 		CountPassage: r.CountPassage,
 		StatusCode:   r.StatusCode,
-		SendAt:       r.SendAt.Format("2006-01-02 15:04:05"),
+		SendAt:       r.SendAt.Format("2006-01-02 15:04:05 -0700"),
 		ResponseBody: r.ResponseBody,
 		Error:        r.Error,
 	})

@@ -19,6 +19,7 @@
         "password": "changeme"
     },
     "sncf_api": {
+        "timezone": "Europe/Paris",
         "host": "http://api.transilien.com",
         "username": "xxx",
         "password": "xxx",

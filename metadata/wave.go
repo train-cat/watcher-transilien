@@ -29,7 +29,7 @@ func (w *Wave) getMappings() (string, string) {
 				"_all": {"enabled": false},
 				"properties": {
 					"time_process": {"type": "integer"},
-					"launched_at":  {"type": "date", "format": "yyyy-MM-dd HH:mm:ss"}
+					"launched_at":  {"type": "date", "format": "yyyy-MM-dd HH:mm:ss Z"}
 				}
 			}
 		}
@@ -57,6 +57,6 @@ func (w Wave) MarshalJSON() ([]byte, error) {
 		LaunchedAt  string `json:"launched_at"`
 	}{
 		TimeProcess: w.TimeProcess.Nanoseconds() / 1e6,
-		LaunchedAt:  w.LaunchedAt.Format("2006-01-02 15:04:05"),
+		LaunchedAt:  w.LaunchedAt.Format("2006-01-02 15:04:05 -0700"),
 	})
 }

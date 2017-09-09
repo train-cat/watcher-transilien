@@ -33,9 +33,9 @@ func (r *Realtime) getMappings() (string, string) {
 				"_all": {"enabled": false},
 				"properties": {
 					"wave_id":    {"type": "keyword"},
-					"checked_at": {"type": "date", "format": "yyyy-MM-dd HH:mm:ss"},
+					"checked_at": {"type": "date", "format": "yyyy-MM-dd HH:mm:ss Z"},
 					"state":      {"type": "keyword"},
-					"schedule":   {"type": "date", "format": "yyyy-MM-dd HH:mm"},
+					"schedule":   {"type": "date", "format": "yyyy-MM-dd HH:mm Z"},
 					"station": {
 						"properties": {
 							"id":   {"type": "integer"},
@@ -79,9 +79,9 @@ func (r *Realtime) MarshalJSON() ([]byte, error) {
 		Train     Train   `json:"train"`
 	}{
 		WaveID:    r.WaveID,
-		CheckedAt: r.CheckedAt.Format("2006-01-02 15:04:05"),
+		CheckedAt: r.CheckedAt.Format("2006-01-02 15:04:05 -0700"),
 		State:     r.State,
-		Schedule:  r.Schedule.Format("2006-01-02 15:04"),
+		Schedule:  r.Schedule.Format("2006-01-02 15:04 -0700"),
 		Station:   station{ID: r.Station.ID, Name: r.Station.Name, UIC: r.Station.UIC},
 		Train:     Train{Code: r.Train.Code, Mission: r.Train.Mission},
 	})

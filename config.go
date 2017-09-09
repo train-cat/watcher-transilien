@@ -9,6 +9,7 @@ import (
 	"github.com/Eraac/train-sniffer/model"
 	"github.com/Eraac/train-sniffer/metadata"
 	"github.com/Eraac/train-sniffer/utils"
+	"github.com/Eraac/train-sniffer/sncf"
 )
 
 func init() {
@@ -39,6 +40,7 @@ func init() {
 
 	// Init function should be call after viper initialisation
 	utils.Init()
+	sncf.Init()
 	model.Init()
 	metadata.Init()
 }

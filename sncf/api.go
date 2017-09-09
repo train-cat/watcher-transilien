@@ -11,6 +11,8 @@ import (
 	"github.com/Eraac/train-sniffer/metadata"
 	"github.com/Eraac/train-sniffer/model"
 	"github.com/spf13/viper"
+	"github.com/Eraac/train-sniffer/utils"
+	"os"
 )
 
 const (
@@ -47,10 +49,23 @@ type (
 
 var (
 	API *api
+
+	location *time.Location
 )
 
-func init() {
+func Init() {
 	API = &api{http.Client{}}
+
+	l, err := time.LoadLocation(viper.GetString("sncf_api.timezone"))
+
+	if err != nil {
+		utils.Error(err.Error())
+		os.Exit(utils.ErrorLoadTimezone)
+	}
+
+	utils.Log(fmt.Sprintf("timezone: %s", l.String()))
+
+	location = l
 }
 
 func addHeaders(r *http.Request) {
@@ -127,7 +142,7 @@ func buildURI(stationID string) string {
 }
 
 func (p Passage) GetTime() (time.Time, error) {
-	return time.Parse("02/01/2006 15:04", p.Date.String)
+	return time.ParseInLocation("02/01/2006 15:04", p.Date.String, location)
 }
 
 func (p Passage) String() string {

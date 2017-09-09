@@ -33,7 +33,7 @@ func (j *Job) getMappings() (string, string) {
 				"_all": {"enabled": false},
 				"properties": {
 					"wave_id":      {"type": "keyword"},
-					"start_at":     {"type": "date", "format": "yyyy-MM-dd HH:mm:ss"},
+					"start_at":     {"type": "date", "format": "yyyy-MM-dd HH:mm:ss Z"},
 					"time_process": {"type": "integer"},
 					"station": {
 						"properties": {
@@ -72,7 +72,7 @@ func (j Job) MarshalJSON() ([]byte, error) {
 		Error       string  `json:"error"`
 	}{
 		WaveID:      j.WaveID,
-		StartAt:     j.StartAt.Format("2006-01-02 15:04:05"),
+		StartAt:     j.StartAt.Format("2006-01-02 15:04:05 -0700"),
 		TimeProcess: j.TimeProcess.Nanoseconds() / 1e6,
 		Station:     station{ID: j.Station.ID, Name: j.Station.Name, UIC: j.Station.UIC},
 		Error:       j.Error,
