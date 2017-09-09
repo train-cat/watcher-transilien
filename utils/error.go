@@ -1,8 +1,10 @@
 package utils
 
 const (
-	ErrorInitElasticSearch = iota
+	_ = iota // 0 mean success
+	ErrorInitElasticSearch
 	ErrorCreateIndexElasticSearch
 	ErrorInitDatabase
 	ErrorInitQueue
+	ErrorLoadTimezone
 )
