@@ -3,6 +3,7 @@ package model
 import (
 	"github.com/jinzhu/gorm"
 	"fmt"
+	"github.com/Eraac/train-sniffer/utils"
 )
 
 type (
@@ -19,25 +20,43 @@ type (
 
 var TrainRepository *trainRepository
 
+// FindByCode return train by code
 func (r *trainRepository) FindByCode(code string) (*Train, error) {
-	key := cache.buildKeyTrainCode(code)
-	train, err := cache.getTrain(key)
+	train := &Train{}
 
-	if err != nil && err != MissError {
-		return nil, err
-	}
-
-	if err == nil {
-		return train, nil
-	}
-
-	err = db.Where("code = ?", code).Find(train).Error
-
-	if err == nil {
-		cache.set(key, *train)
-	}
+	err := db.Where("code = ?", code).Find(train).Error
 
 	return train, err
+}
+
+// IsExist return true if train exist (in redis)
+func (r *trainRepository) IsExist(code string) bool {
+	key := cache.buildKeyTrainCode(code)
+
+	exist := cache.IsKeyExist(key)
+
+	if exist {
+		return exist
+	}
+
+	count := 0
+
+	err := db.Model(&Train{}).Where("code = ?", code).Count(&count).Error
+
+	if err != nil {
+		utils.Error(err.Error())
+		return false
+	}
+
+	if count > 0 {
+		err = cache.set(key, true)
+
+		if err != nil {
+			utils.Error(err.Error())
+		}
+	}
+
+	return count > 0
 }
 
 func (t *Train) Persist() error {

@@ -38,74 +38,71 @@ func IsWeek(t time.Time) bool {
 	return true
 }
 
-// GetTrain return train from passage and insert in database if not exist
-func GetTrain(passage sncf.Passage) (*model.Train, error) {
+// PersistTrain add train to database if not exist
+func PersistTrain(passage sncf.Passage) error {
 	key := fmt.Sprintf("train-%s", passage.TrainID)
 
+	// Avoid persist train twice if train was found is the same wave
 	lock.Lock(key)
 	defer lock.Unlock(key)
 
-	train, err := model.TrainRepository.FindByCode(passage.TrainID)
+	exist := model.TrainRepository.IsExist(passage.TrainID)
 
-	if err != nil && err != gorm.ErrRecordNotFound {
-		return nil, err
+	if exist {
+		return nil
 	}
 
-	// INSERT train if not exist
-	if err == gorm.ErrRecordNotFound {
-		terminus, err := model.StationRepository.FindByUIC(passage.TerminusID)
-
-		if err != nil && err != gorm.ErrRecordNotFound {
-			return nil, err
-		}
-
-		train = &model.Train{
-			Code:       passage.TrainID,
-			Mission:    passage.Mission,
-			Terminus:   nil,
-			TerminusID: nil,
-		}
-
-		if terminus != nil {
-			train.Terminus = terminus
-			train.TerminusID = &terminus.ID
-		}
-
-		err = train.Persist()
-
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	return train, nil
+	return createTrain(passage)
 }
 
-// GetPassage return model.Passage and insert in database if not exist
-func GetPassage(p sncf.Passage, station *model.Station, train *model.Train) (*model.Passage, error) {
-	passage, err := model.PassageRepository.FindByStationAndTrain(*station, *train)
+func createTrain(passage sncf.Passage) error {
+	terminus, err := model.StationRepository.FindByUIC(passage.TerminusID)
 
 	if err != nil && err != gorm.ErrRecordNotFound {
-		return nil, err
+		return err
 	}
 
-	// INSERT passage is not exist
-	if err == gorm.ErrRecordNotFound {
-		t, _ := p.GetTime()
-
-		passage = &model.Passage{
-			Time:    t,
-			IsWeek:  IsWeek(t),
-			Station: *station,
-			Train:   *train,
-		}
-
-		err = passage.Persist()
-
-		if err != nil {
-			return nil, err
-		}
+	train := &model.Train{
+		Code:       passage.TrainID,
+		Mission:    passage.Mission,
+		Terminus:   nil,
+		TerminusID: nil,
 	}
 
-	return passage, nil
+	if terminus != nil {
+		train.Terminus = terminus
+		train.TerminusID = &terminus.ID
+	}
+
+	return train.Persist()
+}
+
+// PersistPassage add passage to database if not exist
+func PersistPassage(p sncf.Passage, station *model.Station) error {
+	exist := model.PassageRepository.IsExist(p.TrainID, station)
+
+	if exist {
+		return nil
+	}
+
+	return createPassage(p, station)
+}
+
+func createPassage(p sncf.Passage, station *model.Station) error {
+	t, _ := p.GetTime()
+
+	train, err := model.TrainRepository.FindByCode(p.TrainID)
+
+	if err != nil {
+		return err
+	}
+
+	passage := &model.Passage{
+		Time:    t,
+		IsWeek:  IsWeek(t),
+		Station: *station,
+		Train:   *train,
+	}
+
+	return passage.Persist()
 }

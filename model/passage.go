@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/jinzhu/gorm"
+	"github.com/Eraac/train-sniffer/utils"
 )
 
 type (
@@ -23,25 +24,35 @@ type (
 
 var PassageRepository *passageRepository
 
-func (r *passageRepository) FindByStationAndTrain(station Station, train Train) (*Passage, error) {
-	key := cache.buildKeyPassage(station, train)
-	passage, err := cache.getPassage(key)
+func (r *passageRepository) IsExist(code string, s *Station) bool {
+	key := cache.buildKeyPassage(*s, code)
 
-	if err != nil && err != MissError {
-		return nil, err
+	exist := cache.IsKeyExist(key)
+
+	if exist {
+		return true
 	}
 
-	if err == nil {
-		return passage, nil
+	count := 0
+
+	err := db.Model(&Passage{}).Joins(
+		"LEFT JOIN train ON train.id = train_id",
+			).Where("passage.station_id = ? AND train.code = ?", s.ID, code).Count(&count).Error
+
+	if err != nil {
+		utils.Error(err.Error())
+		return false
 	}
 
-	err = db.Where("station_id = ? AND train_id = ?", station.ID, train.ID).Find(passage).Error
+	if count > 0 {
+		err = cache.set(key, true)
 
-	if err == nil {
-		cache.set(key, *passage)
+		if err != nil {
+			utils.Error(err.Error())
+		}
 	}
 
-	return passage, err
+	return count > 0
 }
 
 func (p *Passage) Persist() error {

@@ -8,6 +8,7 @@ import (
 	"github.com/Eraac/train-sniffer/metadata"
 	"github.com/Eraac/train-sniffer/model"
 	"github.com/Eraac/train-sniffer/sncf"
+	"github.com/Eraac/train-sniffer/utils"
 )
 
 type (
@@ -58,22 +59,7 @@ func (j job) do() error {
 			break
 		}
 
-		train, err := GetTrain(passage)
-
-		if err != nil {
-			return err
-		}
-
-		p, err := GetPassage(passage, &j.station, train)
-
-		if err != nil {
-			return err
-		}
-
-		rt := &model.Realtime{
-			State:     GenerateModelState(passage.State),
-			PassageID: p.ID,
-		}
+		keepTrack(passage, j.station)
 
 		schedule, err := passage.GetTime()
 
@@ -82,18 +68,12 @@ func (j job) do() error {
 		}
 
 		mrt := &metadata.Realtime{
-			WaveID: j.UUID,
+			WaveID:    j.UUID,
 			CheckedAt: time.Now(),
-			State: rt.State,
-			Schedule: schedule,
-			Station: j.station,
-			Train: metadata.Train{Code: passage.TrainID, Mission: passage.Mission},
-		}
-
-		err = rt.Persist()
-
-		if err != nil {
-			return err
+			State:     GenerateModelState(passage.State),
+			Schedule:  schedule,
+			Station:   j.station,
+			Train:     metadata.Train{Code: passage.TrainID, Mission: passage.Mission},
 		}
 
 		mrt.Persist()
@@ -102,4 +82,20 @@ func (j job) do() error {
 	}
 
 	return nil
+}
+
+func keepTrack(p sncf.Passage, s model.Station) {
+	err := PersistTrain(p)
+
+	if err != nil {
+		// Don't return, if train isn't persist, it will be persist next time
+		utils.Error(err.Error())
+	}
+
+	err = PersistPassage(p, &s)
+
+	if err != nil {
+		// Don't return, if train isn't persist, it will be persist next time
+		utils.Error(err.Error())
+	}
 }

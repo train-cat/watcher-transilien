@@ -13,7 +13,7 @@ import (
 
 const (
 	keyTrainCode  = "train-code-%s"
-	keyPassage    = "passage-station_id-%d-train_id-%d"
+	keyPassage    = "passage-station_id-%d-train_code-%s"
 	keyBanStation = "ban-station-%d"
 )
 
@@ -57,28 +57,12 @@ func (c cacheModel) buildKeyTrainCode(code string) string {
 	return fmt.Sprintf(keyTrainCode, code)
 }
 
-func (c cacheModel) buildKeyPassage(s Station, t Train) string {
-	return fmt.Sprintf(keyPassage, s.ID, t.ID)
+func (c cacheModel) buildKeyPassage(s Station, code string) string {
+	return fmt.Sprintf(keyPassage, s.ID, code)
 }
 
 func (c cacheModel) buildKeyBanStation(s Station) string {
 	return fmt.Sprintf(keyBanStation, s.ID)
-}
-
-func (c cacheModel) getTrain(key string) (*Train, error) {
-	train := &Train{}
-
-	err := c.get(key, train)
-
-	return train, err
-}
-
-func (c cacheModel) getPassage(key string) (*Passage, error) {
-	passage := &Passage{}
-
-	err := c.get(key, passage)
-
-	return passage, err
 }
 
 func (c cacheModel) get(key string, obj interface{}) error {
@@ -121,5 +105,5 @@ func (c cacheModel) IsKeyExist(key string) bool {
 		return false
 	}
 
-	return bool(exist > 0)
+	return exist > 0
 }
