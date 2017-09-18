@@ -36,7 +36,7 @@ func Init() {
 }
 
 func registerModel() {
-	db.AutoMigrate(&Station{}, &Train{}, &Passage{}, &Realtime{})
+	db.AutoMigrate(&Station{}, &Train{}, &Passage{})
 }
 
 // Close db connection

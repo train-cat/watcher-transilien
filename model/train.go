@@ -6,6 +6,13 @@ import (
 	"github.com/Eraac/train-sniffer/utils"
 )
 
+
+const (
+	StateOnTime  = "on_time"
+	StateDelayed = "delayed"
+	StateDeleted = "deleted"
+)
+
 type (
 	Train struct {
 		gorm.Model
