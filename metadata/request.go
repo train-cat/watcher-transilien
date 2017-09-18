@@ -11,6 +11,7 @@ import (
 )
 
 type (
+	// Request represent all data around one request send to the SNCF API
 	Request struct {
 		WaveID       string
 		ResponseTime time.Duration
@@ -55,6 +56,7 @@ func (r *Request) getMappings() (string, string) {
 	}`
 }
 
+// Persist metadata to ElasticSearch
 func (r Request) Persist() {
 	_, err := client.Index().
 		Index(indexRequest).
@@ -69,6 +71,7 @@ func (r Request) Persist() {
 	utils.Log(fmt.Sprintf("%+v", r))
 }
 
+// MarshalJSON return good formatted json for ElasticSearch
 func (r Request) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&struct {
 		WaveID       string  `json:"wave_id"`

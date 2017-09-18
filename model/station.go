@@ -9,6 +9,7 @@ import (
 )
 
 type (
+	// Station represent one station from SNCF API
 	Station struct {
 		gorm.Model
 		Name       string
@@ -18,14 +19,18 @@ type (
 
 	stationRepository struct{}
 
+	// Stations is alias for slice of *Station
 	Stations []*Station
 )
 
 var (
+	// StationRepository regroup all methods relevant to Station
 	StationRepository *stationRepository
 
-	UpdateError              = fmt.Errorf("Can not update this entity")
-	NoStationsAvailableError = fmt.Errorf("No stations available !")
+	// ErrUpdate is returned when update fail
+	ErrUpdate = fmt.Errorf("Can not update this entity")
+	// ErrNoStationsAvailable is returned when no stations is available for realtime
+	ErrNoStationsAvailable = fmt.Errorf("No stations available !")
 )
 
 func init() {
@@ -56,9 +61,10 @@ func (r *stationRepository) FindAllRealtime() (Stations, error) {
 	return ss, nil
 }
 
+// Update a station
 func (s *Station) Update() error {
 	if db.NewRecord(s) {
-		return UpdateError
+		return ErrUpdate
 	}
 
 	return db.Model(s).Update("is_realtime").Error
@@ -78,7 +84,7 @@ func (s *Station) String() string {
 	return fmt.Sprintf("[station] id: %d - name: %s - UIC: %s", s.ID, s.Name, s.UIC)
 }
 
-// StationDistributor loop into slice and through each element into a chan
+// StationsDistributor loop into slice and through each element into a chan
 func StationsDistributor() (<-chan *Station, error) {
 	stations, err := StationRepository.FindAllRealtime()
 
@@ -89,7 +95,7 @@ func StationsDistributor() (<-chan *Station, error) {
 	length := len(stations)
 
 	if length == 0 {
-		return nil, NoStationsAvailableError
+		return nil, ErrNoStationsAvailable
 	}
 
 	c := make(chan *Station)

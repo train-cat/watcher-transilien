@@ -1,19 +1,21 @@
 package model
 
 import (
-	"github.com/jinzhu/gorm"
 	"fmt"
+
 	"github.com/Eraac/train-sniffer/utils"
+	"github.com/jinzhu/gorm"
 )
 
-
 const (
+	// Different states of train
 	StateOnTime  = "on_time"
 	StateDelayed = "delayed"
 	StateDeleted = "deleted"
 )
 
 type (
+	// Train represent one train returned by SNCF API
 	Train struct {
 		gorm.Model
 		Code       string
@@ -25,6 +27,7 @@ type (
 	trainRepository struct{}
 )
 
+// TrainRepository regroup all methods relevant to Train
 var TrainRepository *trainRepository
 
 // FindByCode return train by code
@@ -66,6 +69,7 @@ func (r *trainRepository) IsExist(code string) bool {
 	return count > 0
 }
 
+// Persist train to the database
 func (t *Train) Persist() error {
 	return db.Save(t).Error
 }

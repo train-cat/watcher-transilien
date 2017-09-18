@@ -24,12 +24,11 @@ var (
 	codec *rediscache.Codec
 	cache cacheModel
 
-	MissError        = fmt.Errorf("Cache miss")
-	KeyNotFoundError = fmt.Errorf("Key not found")
-	NilResponseError = fmt.Errorf("Resource is nil")
+	// ErrorMiss is returned when cache is miss
+	ErrorMiss = fmt.Errorf("Cache miss")
 )
 
-func init_cache() {
+func initCache() {
 	ring = redis.NewRing(&redis.RingOptions{
 		Addrs: viper.GetStringMapString("redis.servers"),
 	})
@@ -73,7 +72,7 @@ func (c cacheModel) get(key string, obj interface{}) error {
 	}
 
 	if exists == 0 {
-		return MissError
+		return ErrorMiss
 	}
 
 	err = codec.Get(key, &obj)

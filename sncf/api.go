@@ -16,9 +16,11 @@ import (
 )
 
 const (
+	// Different mode returned by SNCF API for a station
 	ModeTheoretical = "T"
 	ModeRealTime    = "R"
 
+	// Different state returned by SNCF API for one passage
 	StateTrainDelayed = "Retardé"
 	StateTrainDeleted = "Supprimé"
 )
@@ -33,6 +35,7 @@ type (
 		Passages []Passage `xml:"train"`
 	}
 
+	// Passage represent response from SNCF API
 	Passage struct {
 		XMLName xml.Name `xml:"train"`
 		Date    struct {
@@ -48,11 +51,13 @@ type (
 )
 
 var (
+	// API is client for request to SNCF API
 	API *api
 
 	location *time.Location
 )
 
+// Init client for SNCF API
 func Init() {
 	API = &api{http.Client{}}
 
@@ -141,6 +146,7 @@ func buildURI(stationID string) string {
 	)
 }
 
+// GetTime parse time from SNCF API to time.Time
 func (p Passage) GetTime() (time.Time, error) {
 	return time.ParseInLocation("02/01/2006 15:04", p.Date.String, location)
 }

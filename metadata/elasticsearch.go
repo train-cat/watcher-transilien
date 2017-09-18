@@ -15,12 +15,14 @@ type (
 		Persist()
 	}
 
+	// station is struct for push to ElasticSearch
 	station struct {
 		ID   uint   `json:"id"`
 		Name string `json:"name"`
 		UIC  string `json:"uic"`
 	}
 
+	// Train is struct for push to ElasticSearch
 	Train struct {
 		Code    string `json:"code"`
 		Mission string `json:"mission"`
@@ -34,6 +36,7 @@ var (
 	indexes = []indexable{}
 )
 
+// Init client for elasticsearch
 func Init() {
 	options := []elastic.ClientOptionFunc{
 		elastic.SetURL(viper.GetString("elasticsearch.host")),

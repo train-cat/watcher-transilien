@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/jinzhu/gorm"
+	// Load MySQL driver
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/spf13/viper"
 	"github.com/Eraac/train-sniffer/utils"
@@ -12,6 +13,7 @@ import (
 
 var db *gorm.DB
 
+// Init database connection
 func Init() {
 	username := viper.GetString("database.username")
 	password := viper.GetString("database.password")
@@ -32,7 +34,7 @@ func Init() {
 
 	registerModel()
 
-	init_cache()
+	initCache()
 }
 
 func registerModel() {

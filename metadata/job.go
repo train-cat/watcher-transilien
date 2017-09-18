@@ -11,6 +11,7 @@ import (
 )
 
 type (
+	// Job represent data around one job
 	Job struct {
 		WaveID      string
 		StartAt     time.Time
@@ -49,6 +50,7 @@ func (j *Job) getMappings() (string, string) {
 	}`
 }
 
+// Persist metadata to ElasticSearch
 func (j Job) Persist() {
 	_, err := client.Index().
 		Index(indexJob).
@@ -63,6 +65,7 @@ func (j Job) Persist() {
 	utils.Log(fmt.Sprintf("%+v", j))
 }
 
+// MarshalJSON return good formatted json for ElasticSearch
 func (j Job) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&struct {
 		WaveID      string  `json:"wave_id"`

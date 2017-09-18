@@ -10,6 +10,7 @@ import (
 )
 
 type (
+	// Realtime represent all data around one passage from SNCF API
 	Realtime struct {
 		WaveID    string
 		CheckedAt time.Time
@@ -55,6 +56,7 @@ func (r *Realtime) getMappings() (string, string) {
 	}`
 }
 
+// Persist metadata to ElasticSearch
 func (r *Realtime) Persist() {
 	_, err := client.Index().
 		Index(indexRealtime).
@@ -69,6 +71,7 @@ func (r *Realtime) Persist() {
 	utils.Log(fmt.Sprintf("%+v", r))
 }
 
+// MarshalJSON return good formatted json for ElasticSearch
 func (r *Realtime) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&struct {
 		WaveID    string  `json:"wave_id"`

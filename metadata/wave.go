@@ -9,6 +9,7 @@ import (
 )
 
 type (
+	// Wave represent all data around one wave of call to SNCF API
 	Wave struct {
 		UUID        string
 		TimeProcess time.Duration
@@ -36,6 +37,7 @@ func (w *Wave) getMappings() (string, string) {
 	}`
 }
 
+// Persist meta to ElasticSearch
 func (w Wave) Persist() {
 	_, err := client.Index().
 		Index(indexWave).
@@ -51,6 +53,7 @@ func (w Wave) Persist() {
 	utils.Log(fmt.Sprintf("%+v", w))
 }
 
+// MarshalJSON return good formatted json for ElasticSearch
 func (w Wave) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&struct {
 		TimeProcess int64  `json:"time_process"`

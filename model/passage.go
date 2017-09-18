@@ -9,6 +9,7 @@ import (
 )
 
 type (
+	// Passage represent one train which passes to a station at a specific time
 	Passage struct {
 		gorm.Model
 		Time      time.Time
@@ -22,6 +23,7 @@ type (
 	passageRepository struct{}
 )
 
+// PassageRepository regroup all methods relevant to Passage
 var PassageRepository *passageRepository
 
 func (r *passageRepository) IsExist(code string, s *Station) bool {
@@ -55,6 +57,7 @@ func (r *passageRepository) IsExist(code string, s *Station) bool {
 	return count > 0
 }
 
+// Persist passage to database
 func (p *Passage) Persist() error {
 	return db.Save(p).Error
 }
