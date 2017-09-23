@@ -1,14 +1,20 @@
 package main
 
 import (
+	"context"
+	"encoding/json"
 	"fmt"
+	"os"
 	"sync"
 	"time"
 
+	"cloud.google.com/go/pubsub"
+	"google.golang.org/api/option"
 	"github.com/Eraac/train-sniffer/metadata"
 	"github.com/Eraac/train-sniffer/model"
 	"github.com/Eraac/train-sniffer/sncf"
 	"github.com/Eraac/train-sniffer/utils"
+	"github.com/spf13/viper"
 )
 
 type (
@@ -18,6 +24,29 @@ type (
 		UUID     string
 	}
 )
+
+var (
+	topic *pubsub.Topic
+
+	// ErrorTimeoutPubsub is returned when pubsub not response
+	ErrorTimeoutPubsub = fmt.Errorf("pubsub timeout")
+)
+
+func init() {
+	c, err := pubsub.NewClient(
+		context.Background(),
+		viper.GetString("pubsub.project"),
+		option.WithCredentialsFile(viper.GetString("pubsub.credentials")),
+	)
+
+	if err != nil {
+		utils.Error(err.Error())
+		os.Exit(utils.ErrorInitPubSub)
+	}
+
+	topic = c.Topic(viper.GetString("pubsub.topic"))
+}
+
 
 func consume(jobs chan job) {
 	wg := sync.WaitGroup{}
@@ -31,6 +60,7 @@ func consume(jobs chan job) {
 			err := j.do()
 
 			if err != nil {
+				utils.Error(err.Error())
 				md.Error = err.Error()
 			}
 
@@ -67,10 +97,12 @@ func (j job) do() error {
 			return err
 		}
 
+		state := GenerateModelState(passage.State)
+
 		mrt := &metadata.Realtime{
 			WaveID:    j.UUID,
 			CheckedAt: time.Now(),
-			State:     GenerateModelState(passage.State),
+			State:     state,
 			Schedule:  schedule,
 			Station:   j.station,
 			Train:     metadata.Train{Code: passage.TrainID, Mission: passage.Mission},
@@ -78,10 +110,35 @@ func (j job) do() error {
 
 		mrt.Persist()
 
-		// TODO notify if delayed or deleted
+		return publish(passage.TrainID, state)
 	}
 
 	return nil
+}
+
+func publish(code string, state string) error {
+	i := model.Issue{Code: code, State: state}
+
+	b, err := json.Marshal(i)
+
+	if err != nil {
+		return nil
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10 * time.Second)
+	defer cancel()
+
+	result := topic.Publish(ctx, &pubsub.Message{
+		Data: b,
+	})
+
+	select {
+	case <-ctx.Done():
+		return ErrorTimeoutPubsub
+	case <-result.Ready():
+		_, err = result.Get(ctx)
+		return err
+	}
 }
 
 func keepTrack(p sncf.Passage, s model.Station) {

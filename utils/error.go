@@ -7,4 +7,5 @@ const (
 	ErrorInitDatabase
 	ErrorInitQueue
 	ErrorLoadTimezone
+	ErrorInitPubSub
 )
