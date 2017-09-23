@@ -110,7 +110,11 @@ func (j job) do() error {
 
 		mrt.Persist()
 
-		return publish(passage.TrainID, state)
+		if state != model.StateOnTime {
+			err = publish(passage.TrainID, state)
+		}
+
+		return err
 	}
 
 	return nil
