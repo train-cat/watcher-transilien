@@ -114,7 +114,9 @@ func (j job) do() error {
 			err = publish(passage.TrainID, state, j.station.Name, schedule)
 		}
 
-		return err
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
