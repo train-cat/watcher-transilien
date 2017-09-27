@@ -18,6 +18,7 @@ type (
 		Schedule  time.Time
 		Station   model.Station
 		Train     Train
+		PassageID string
 	}
 )
 
@@ -49,7 +50,8 @@ func (r *Realtime) getMappings() (string, string) {
 							"code":    {"type": "keyword"},
 							"mission": {"type": "keyword"}
 						}
-					}
+					},
+					"passage_id" {"type"; "keyword"}
 				}
 			}
 		}
@@ -80,6 +82,7 @@ func (r *Realtime) MarshalJSON() ([]byte, error) {
 		Schedule  string  `json:"schedule"`
 		Station   station `json:"station"`
 		Train     Train   `json:"train"`
+		PassageID string  `json:"passage_id"`
 	}{
 		WaveID:    r.WaveID,
 		CheckedAt: r.CheckedAt.Format("2006-01-02 15:04:05 -0700"),
@@ -87,5 +90,6 @@ func (r *Realtime) MarshalJSON() ([]byte, error) {
 		Schedule:  r.Schedule.Format("2006-01-02 15:04 -0700"),
 		Station:   station{ID: r.Station.ID, Name: r.Station.Name, UIC: r.Station.UIC},
 		Train:     Train{Code: r.Train.Code, Mission: r.Train.Mission},
+		PassageID: fmt.Sprintf("%d-%s", r.Station.ID, r.Train.Code),
 	})
 }
