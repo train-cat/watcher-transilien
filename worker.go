@@ -111,7 +111,7 @@ func (j job) do() error {
 		mrt.Persist()
 
 		if state != model.StateOnTime {
-			err = publish(passage.TrainID, state, j.station.Name, schedule)
+			err = publish(passage.TrainID, state, j.station.ID, schedule)
 		}
 
 		if err != nil {
@@ -122,12 +122,12 @@ func (j job) do() error {
 	return nil
 }
 
-func publish(code string, state string, station string, schedule time.Time) error {
+func publish(code string, state string, stationID uint, schedule time.Time) error {
 	i := model.Issue{
 		Code: code,
 		State: state,
-		Station: station,
-		Schedule: schedule.Format("02/01/2006 15:04"),
+		StationID: stationID,
+		Schedule: schedule.Format("02/01/2006 15:04 -0700"),
 	}
 
 	b, err := json.Marshal(i)
