@@ -7,8 +7,8 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
+// Different states of train
 const (
-	// Different states of train
 	StateOnTime  = "on_time"
 	StateDelayed = "delayed"
 	StateDeleted = "deleted"

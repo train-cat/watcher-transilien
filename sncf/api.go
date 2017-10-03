@@ -15,12 +15,14 @@ import (
 	"os"
 )
 
+// Different mode returned by SNCF API for a station
 const (
-	// Different mode returned by SNCF API for a station
 	ModeTheoretical = "T"
 	ModeRealTime    = "R"
+)
 
-	// Different state returned by SNCF API for one passage
+// Different state returned by SNCF API for one passage
+const (
 	StateTrainDelayed = "Retardé"
 	StateTrainDeleted = "Supprimé"
 )
