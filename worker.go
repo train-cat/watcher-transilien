@@ -9,12 +9,12 @@ import (
 	"time"
 
 	"cloud.google.com/go/pubsub"
-	"google.golang.org/api/option"
-	"github.com/Eraac/train-sniffer/metadata"
-	"github.com/Eraac/train-sniffer/model"
-	"github.com/Eraac/train-sniffer/sncf"
-	"github.com/Eraac/train-sniffer/utils"
 	"github.com/spf13/viper"
+	"github.com/train-sh/sniffer-transilien/metadata"
+	"github.com/train-sh/sniffer-transilien/model"
+	"github.com/train-sh/sniffer-transilien/sncf"
+	"github.com/train-sh/sniffer-transilien/utils"
+	"google.golang.org/api/option"
 )
 
 type (
@@ -46,7 +46,6 @@ func init() {
 
 	topic = c.Topic(viper.GetString("pubsub.topic"))
 }
-
 
 func consume(jobs chan job) {
 	wg := sync.WaitGroup{}
@@ -124,10 +123,10 @@ func (j job) do() error {
 
 func publish(code string, state string, stationID uint, schedule time.Time) error {
 	i := model.Issue{
-		Code: code,
-		State: state,
+		Code:      code,
+		State:     state,
 		StationID: stationID,
-		Schedule: schedule.Format("02/01/2006 15:04 -0700"),
+		Schedule:  schedule.Format("02/01/2006 15:04 -0700"),
 	}
 
 	b, err := json.Marshal(i)
@@ -136,7 +135,7 @@ func publish(code string, state string, stationID uint, schedule time.Time) erro
 		return nil
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10 * time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	result := topic.Publish(ctx, &pubsub.Message{

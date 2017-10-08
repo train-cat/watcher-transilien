@@ -3,8 +3,8 @@ package model
 import (
 	"fmt"
 
-	"github.com/Eraac/train-sniffer/utils"
 	"github.com/jinzhu/gorm"
+	"github.com/train-sh/sniffer-transilien/utils"
 )
 
 // Different states of train

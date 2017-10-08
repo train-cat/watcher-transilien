@@ -8,7 +8,7 @@ import (
 	// Load MySQL driver
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/spf13/viper"
-	"github.com/Eraac/train-sniffer/utils"
+	"github.com/train-sh/sniffer-transilien/utils"
 )
 
 var db *gorm.DB

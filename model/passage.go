@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/jinzhu/gorm"
-	"github.com/Eraac/train-sniffer/utils"
+	"github.com/train-sh/sniffer-transilien/utils"
 )
 
 type (

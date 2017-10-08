@@ -2,13 +2,13 @@ package model
 
 import (
 	"fmt"
+	"time"
 
-	"github.com/Eraac/train-sniffer/utils"
 	rediscache "github.com/go-redis/cache"
 	"github.com/go-redis/redis"
 	"github.com/spf13/viper"
+	"github.com/train-sh/sniffer-transilien/utils"
 	"github.com/vmihailenco/msgpack"
-	"time"
 )
 
 const (
@@ -93,7 +93,7 @@ func (c cacheModel) set(key string, obj interface{}) error {
 }
 
 func (c cacheModel) setBan(key string, h int) error {
-	return ring.Set(key, true, time.Hour * time.Duration(h)).Err()
+	return ring.Set(key, true, time.Hour*time.Duration(h)).Err()
 }
 
 func (c cacheModel) IsKeyExist(key string) bool {

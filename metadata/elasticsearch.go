@@ -6,7 +6,7 @@ import (
 
 	"gopkg.in/olivere/elastic.v5"
 	"github.com/spf13/viper"
-	"github.com/Eraac/train-sniffer/utils"
+	"github.com/train-sh/sniffer-transilien/utils"
 )
 
 type (

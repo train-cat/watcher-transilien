@@ -1,13 +1,12 @@
 package metadata
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
-	"encoding/json"
-
-	"github.com/Eraac/train-sniffer/model"
-	"github.com/Eraac/train-sniffer/utils"
+	"github.com/train-sh/sniffer-transilien/model"
+	"github.com/train-sh/sniffer-transilien/utils"
 )
 
 type (

@@ -6,13 +6,13 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/http/httputil"
+	"os"
 	"time"
 
-	"github.com/Eraac/train-sniffer/metadata"
-	"github.com/Eraac/train-sniffer/model"
 	"github.com/spf13/viper"
-	"github.com/Eraac/train-sniffer/utils"
-	"os"
+	"github.com/train-sh/sniffer-transilien/metadata"
+	"github.com/train-sh/sniffer-transilien/model"
+	"github.com/train-sh/sniffer-transilien/utils"
 )
 
 // Different mode returned by SNCF API for a station

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/Eraac/train-sniffer/sncf"
-	"github.com/Eraac/train-sniffer/model"
+	"github.com/train-sh/sniffer-transilien/sncf"
+	"github.com/train-sh/sniffer-transilien/model"
 	"github.com/jinzhu/gorm"
 	"github.com/xiaonanln/keylock"
 )

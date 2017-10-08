@@ -6,10 +6,10 @@ import (
 
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
-	"github.com/Eraac/train-sniffer/model"
-	"github.com/Eraac/train-sniffer/metadata"
-	"github.com/Eraac/train-sniffer/utils"
-	"github.com/Eraac/train-sniffer/sncf"
+	"github.com/train-sh/sniffer-transilien/model"
+	"github.com/train-sh/sniffer-transilien/metadata"
+	"github.com/train-sh/sniffer-transilien/utils"
+	"github.com/train-sh/sniffer-transilien/sncf"
 )
 
 func init() {

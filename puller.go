@@ -5,12 +5,12 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Eraac/train-sniffer/metadata"
-	"github.com/Eraac/train-sniffer/model"
-	"github.com/Eraac/train-sniffer/sncf"
 	"github.com/satori/go.uuid"
 	"github.com/spf13/viper"
-	"github.com/Eraac/train-sniffer/utils"
+	"github.com/train-sh/sniffer-transilien/metadata"
+	"github.com/train-sh/sniffer-transilien/model"
+	"github.com/train-sh/sniffer-transilien/sncf"
+	"github.com/train-sh/sniffer-transilien/utils"
 )
 
 var (
