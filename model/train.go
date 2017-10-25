@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/jinzhu/gorm"
-	"github.com/train-sh/sniffer-transilien/utils"
+	"github.com/train-cat/sniffer-transilien/utils"
 )
 
 // Different states of train

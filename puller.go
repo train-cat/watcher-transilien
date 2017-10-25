@@ -7,10 +7,10 @@ import (
 
 	"github.com/satori/go.uuid"
 	"github.com/spf13/viper"
-	"github.com/train-sh/sniffer-transilien/metadata"
-	"github.com/train-sh/sniffer-transilien/model"
-	"github.com/train-sh/sniffer-transilien/sncf"
-	"github.com/train-sh/sniffer-transilien/utils"
+	"github.com/train-cat/sniffer-transilien/metadata"
+	"github.com/train-cat/sniffer-transilien/model"
+	"github.com/train-cat/sniffer-transilien/sncf"
+	"github.com/train-cat/sniffer-transilien/utils"
 )
 
 var (

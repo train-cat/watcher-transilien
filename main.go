@@ -7,7 +7,7 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/train-sh/sniffer-transilien/utils"
+	"github.com/train-cat/sniffer-transilien/utils"
 )
 
 func main() {

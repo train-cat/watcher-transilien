@@ -10,9 +10,9 @@ import (
 	"time"
 
 	"github.com/spf13/viper"
-	"github.com/train-sh/sniffer-transilien/metadata"
-	"github.com/train-sh/sniffer-transilien/model"
-	"github.com/train-sh/sniffer-transilien/utils"
+	"github.com/train-cat/sniffer-transilien/metadata"
+	"github.com/train-cat/sniffer-transilien/model"
+	"github.com/train-cat/sniffer-transilien/utils"
 )
 
 // Different mode returned by SNCF API for a station

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/train-sh/sniffer-transilien/model"
-	"github.com/train-sh/sniffer-transilien/utils"
+	"github.com/train-cat/sniffer-transilien/model"
+	"github.com/train-cat/sniffer-transilien/utils"
 )
 
 type (
