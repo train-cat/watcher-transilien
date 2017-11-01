@@ -10,6 +10,7 @@ import (
 
 	"cloud.google.com/go/pubsub"
 	"github.com/spf13/viper"
+	"github.com/train-cat/client-train-go"
 	"github.com/train-cat/sniffer-transilien/metadata"
 	"github.com/train-cat/sniffer-transilien/model"
 	"github.com/train-cat/sniffer-transilien/sncf"
@@ -19,7 +20,7 @@ import (
 
 type (
 	job struct {
-		station  model.Station
+		station  traincat.Station
 		passages []sncf.Passage
 		UUID     string
 	}
@@ -78,13 +79,7 @@ func (j job) do() error {
 	for _, passage := range j.passages {
 		// if station has not realtime api available persist information in database
 		if passage.Date.Mode == sncf.ModeTheoretical {
-			j.station.IsRealTime = false
-			err := (&j.station).Update()
-
-			if err != nil {
-				return err
-			}
-
+			utils.Warning(fmt.Sprintf("stations %s is not realtime", j.station.Name))
 			break
 		}
 
@@ -109,8 +104,8 @@ func (j job) do() error {
 
 		mrt.Persist()
 
-		if state != model.StateOnTime {
-			err = publish(passage.TrainID, state, j.station.ID, schedule)
+		if state != StateOnTime {
+			err = publish(passage.TrainID, state, j.station, schedule)
 		}
 
 		if err != nil {
@@ -121,12 +116,13 @@ func (j job) do() error {
 	return nil
 }
 
-func publish(code string, state string, stationID uint, schedule time.Time) error {
+func publish(code string, state string, station traincat.Station, schedule time.Time) error {
 	i := model.Issue{
-		Code:      code,
-		State:     state,
-		StationID: stationID,
-		Schedule:  schedule.Format("02/01/2006 15:04 -0700"),
+		Code:        code,
+		State:       state,
+		StationID:   station.ID,
+		Schedule:    schedule.Format("15:04"),
+		StationName: station.Name,
 	}
 
 	b, err := json.Marshal(i)
@@ -151,18 +147,18 @@ func publish(code string, state string, stationID uint, schedule time.Time) erro
 	}
 }
 
-func keepTrack(p sncf.Passage, s model.Station) {
+func keepTrack(p sncf.Passage, s traincat.Station) {
 	err := PersistTrain(p)
 
 	if err != nil {
 		// Don't return, if train isn't persist, it will be persist next time
-		utils.Error(err.Error())
+		utils.Error("PersistTrain: " + err.Error())
 	}
 
-	err = PersistPassage(p, &s)
+	err = PersistPassage(p, s)
 
 	if err != nil {
 		// Don't return, if train isn't persist, it will be persist next time
-		utils.Error(err.Error())
+		utils.Error("PersistStop: " + err.Error())
 	}
 }

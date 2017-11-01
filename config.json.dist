@@ -1,11 +1,4 @@
 {
-    "database": {
-        "username": "root",
-        "password": "root",
-        "host": "localhost",
-        "port": 3306,
-        "name": "train"
-    },
     "redis": {
         "servers": {
             "redis-00": "127.0.0.1:6379"
@@ -27,6 +20,11 @@
             "content_type": "application/vnd.sncf.transilien.od.depart+xml;vers=1.0",
             "accept": "application/vnd.sncf.transilien.od.depart+xml;vers=1.0"
         }
+    },
+    "api-train": {
+        "host": "http://127.0.0.1:8080",
+        "username": "xxx",
+        "password": "xxx"
     },
     "sniffer": {
         "ban": {

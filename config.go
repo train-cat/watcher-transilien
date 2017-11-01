@@ -6,10 +6,11 @@ import (
 
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
-	"github.com/train-cat/sniffer-transilien/model"
+	"github.com/train-cat/sniffer-transilien/cache"
 	"github.com/train-cat/sniffer-transilien/metadata"
 	"github.com/train-cat/sniffer-transilien/utils"
 	"github.com/train-cat/sniffer-transilien/sncf"
+	"github.com/train-cat/client-train-go"
 )
 
 func init() {
@@ -41,6 +42,12 @@ func init() {
 	// Init function should be call after viper initialisation
 	utils.Init()
 	sncf.Init()
-	model.Init()
 	metadata.Init()
+	cache.Init()
+
+	traincat.SetConfig(traincat.Config{
+		Host: viper.GetString("api-train.host"),
+		Username: viper.GetString("api-train.username"),
+		Password: viper.GetString("api-train.password"),
+	})
 }

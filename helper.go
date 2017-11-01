@@ -1,30 +1,35 @@
 package main
 
 import (
-	"fmt"
 	"time"
 
+	"github.com/train-cat/client-train-go"
+	"github.com/train-cat/sniffer-transilien/cache"
 	"github.com/train-cat/sniffer-transilien/sncf"
-	"github.com/train-cat/sniffer-transilien/model"
-	"github.com/jinzhu/gorm"
 	"github.com/xiaonanln/keylock"
 )
 
 var (
-	lock  = keylock.NewKeyLock()
+	lock = keylock.NewKeyLock()
+)
+
+const (
+	StateOnTime  = "on_time"
+	StateDelayed = "delayed"
+	StateDeleted = "deleted"
 )
 
 // GenerateModelState return state for database with state from SNCF API
 func GenerateModelState(state string) string {
 	switch state {
 	case sncf.StateTrainDelayed:
-		return model.StateDelayed
+		return StateDelayed
 
 	case sncf.StateTrainDeleted:
-		return model.StateDeleted
+		return StateDeleted
 	}
 
-	return model.StateOnTime
+	return StateOnTime
 }
 
 // IsWeek return true if t is on week day
@@ -38,71 +43,96 @@ func IsWeek(t time.Time) bool {
 	return true
 }
 
+func IsBan(s traincat.Station) bool {
+	return cache.IsKeyExist(cache.BuildKeyBanStation(s))
+}
+
+func terminusIDByUIC(uic string) uint {
+	for _, s := range stations {
+		if s.UIC == uic {
+			return s.ID
+		}
+	}
+
+	return 0
+}
+
 // PersistTrain add train to database if not exist
 func PersistTrain(passage sncf.Passage) error {
-	key := fmt.Sprintf("train-%s", passage.TrainID)
+	key := cache.BuildKeyTrainCode(passage.TrainID)
 
 	// Avoid persist train twice if train was found is the same wave
 	lock.Lock(key)
 	defer lock.Unlock(key)
 
-	exist := model.TrainRepository.IsExist(passage.TrainID)
+	if cache.IsKeyExist(key) {
+		return nil
+	}
+
+	exist, err := traincat.TrainExist(passage.TrainID)
 
 	if exist {
-		return nil
+		return cache.Set(key, true)
+	}
+
+	if err != nil {
+		return err
 	}
 
 	return createTrain(passage)
 }
 
 func createTrain(passage sncf.Passage) error {
-	terminus, err := model.StationRepository.FindByUIC(passage.TerminusID)
+	terminus := terminusIDByUIC(passage.TerminusID)
 
-	if err != nil && err != gorm.ErrRecordNotFound {
-		return err
+	train := traincat.TrainInput{
+		Code:    &passage.TrainID,
+		Mission: &passage.Mission,
 	}
 
-	train := &model.Train{
-		Code:       passage.TrainID,
-		Mission:    passage.Mission,
-		Terminus:   nil,
-		TerminusID: nil,
+	if terminus != 0 {
+		train.TerminusID = &terminus
 	}
 
-	if terminus != nil {
-		train.Terminus = terminus
-		train.TerminusID = &terminus.ID
-	}
+	_, err := traincat.PostTrain(train)
 
-	return train.Persist()
+	return err
 }
 
 // PersistPassage add passage to database if not exist
-func PersistPassage(p sncf.Passage, station *model.Station) error {
-	exist := model.PassageRepository.IsExist(p.TrainID, station)
+func PersistPassage(p sncf.Passage, station traincat.Station) error {
+	key := cache.BuildKeyPassage(station, p.TrainID)
 
-	if exist {
+	if cache.IsKeyExist(key) {
 		return nil
 	}
 
-	return createPassage(p, station)
-}
+	exist, err := traincat.StopExist(station.ID, p.TrainID)
 
-func createPassage(p sncf.Passage, station *model.Station) error {
-	t, _ := p.GetTime()
-
-	train, err := model.TrainRepository.FindByCode(p.TrainID)
+	if exist {
+		return cache.Set(key, true)
+	}
 
 	if err != nil {
 		return err
 	}
 
-	passage := &model.Passage{
-		Time:    t,
-		IsWeek:  IsWeek(t),
-		Station: *station,
-		Train:   *train,
+	return createPassage(p, station)
+}
+
+func createPassage(p sncf.Passage, station traincat.Station) error {
+	t, err := p.GetTime()
+
+	if err != nil {
+		return err
 	}
 
-	return passage.Persist()
+	stop := traincat.StopInput{
+		Schedule: t.Format("15:04"),
+		IsWeek: IsWeek(t),
+	}
+
+	_, err = traincat.PostStop(station.ID, p.TrainID, stop)
+
+	return err
 }

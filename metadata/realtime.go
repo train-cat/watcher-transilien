@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/train-cat/sniffer-transilien/model"
 	"github.com/train-cat/sniffer-transilien/utils"
+	"github.com/train-cat/client-train-go"
 )
 
 type (
@@ -16,7 +16,7 @@ type (
 		CheckedAt time.Time
 		State     string
 		Schedule  time.Time
-		Station   model.Station
+		Station   traincat.Station
 		Train     Train
 		PassageID string
 	}

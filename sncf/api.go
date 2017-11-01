@@ -11,8 +11,8 @@ import (
 
 	"github.com/spf13/viper"
 	"github.com/train-cat/sniffer-transilien/metadata"
-	"github.com/train-cat/sniffer-transilien/model"
 	"github.com/train-cat/sniffer-transilien/utils"
+	"github.com/train-cat/client-train-go"
 )
 
 // Different mode returned by SNCF API for a station
@@ -84,8 +84,8 @@ func addHeaders(r *http.Request) {
 	)
 }
 
-func (api *api) GetPassages(s *model.Station, waveID string) ([]Passage, error) {
-	metadata := metadata.Request{Station: *s, WaveID: waveID}
+func (api *api) GetPassages(s traincat.Station, waveID string) ([]Passage, error) {
+	metadata := metadata.Request{Station: s, WaveID: waveID}
 
 	req, err := http.NewRequest(http.MethodGet, buildURI(s.UIC), nil)
 

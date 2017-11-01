@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/train-cat/sniffer-transilien/model"
 	"github.com/train-cat/sniffer-transilien/utils"
+	"github.com/train-cat/client-train-go"
 )
 
 type (
@@ -15,7 +15,7 @@ type (
 		WaveID      string
 		StartAt     time.Time
 		TimeProcess time.Duration
-		Station     model.Station
+		Station     traincat.Station
 		Error       string
 	}
 )
