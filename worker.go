@@ -16,6 +16,7 @@ import (
 	"github.com/train-cat/sniffer-transilien/sncf"
 	"github.com/train-cat/sniffer-transilien/utils"
 	"google.golang.org/api/option"
+	"github.com/train-cat/sniffer-transilien/cache"
 )
 
 type (
@@ -124,6 +125,14 @@ func publish(code string, state string, station traincat.Station, schedule time.
 		Schedule:    schedule.Format("15:04"),
 		StationName: station.Name,
 	}
+
+	key := cache.BuildKeyIssue(i)
+
+	if cache.IsKeyExist(key) {
+		return nil
+	}
+
+	cache.SetExpiry(key, 12)
 
 	b, err := json.Marshal(i)
 
