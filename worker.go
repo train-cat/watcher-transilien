@@ -122,7 +122,7 @@ func publish(code string, state string, station traincat.Station, schedule time.
 		Code:        code,
 		State:       state,
 		StationID:   station.ID,
-		Schedule:    schedule.Format("15:04"),
+		Schedule:    schedule.Format("02/01/2006 15:04 -0700"),
 		StationName: station.Name,
 	}
 
