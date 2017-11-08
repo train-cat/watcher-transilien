@@ -1,6 +1,6 @@
-# train-sniffer
+# sniffer-transilien
 
-Collect data from SNCF API (passage and train) and real time information. Keep all information in MySQL and ElasticSearch
+Collect real time data from SNCF API (stop and train) 
 
 ## Usage
 ### API SNCF
@@ -9,7 +9,7 @@ Get a api key [register](https://ressources.data.sncf.com/explore/dataset/api-te
 ```
 cp config.json.dist config.json
 # edit configuration 
-go build -o train-sniffer *.go
-./train-sniffer -config config.json
+go build -o sniffer-transilien *.go
+./sniffer-transilien -config config.json
 ```
 
