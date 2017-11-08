@@ -99,14 +99,16 @@ func (api *api) GetPassages(s traincat.Station, waveID string) ([]Passage, error
 
 	metadata.SendAt = time.Now()
 	resp, err := api.client.Do(req)
-	metadata.ResponseTime = time.Since(metadata.SendAt)
-	metadata.StatusCode = resp.StatusCode
 
 	if err != nil {
 		metadata.Error = err.Error()
 		metadata.Persist()
 		return nil, err
 	}
+
+	metadata.ResponseTime = time.Since(metadata.SendAt)
+	metadata.StatusCode = resp.StatusCode
+
 	defer resp.Body.Close()
 
 	if metadata.StatusCode != http.StatusOK {
