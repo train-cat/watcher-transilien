@@ -47,7 +47,9 @@ func init() {
 
 	traincat.SetConfig(traincat.Config{
 		Host: viper.GetString("api-train.host"),
-		Username: viper.GetString("api-train.username"),
-		Password: viper.GetString("api-train.password"),
+		Auth: traincat.Auth{
+			Username: viper.GetString("api-train.username"),
+			Password: viper.GetString("api-train.password"),
+		},
 	})
 }
