@@ -1,0 +1,19 @@
+sudo: required
+
+language: go
+go:
+  - 1.9
+
+services:
+  - docker
+
+script:
+  - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o sniffer-transilien *.go
+
+after_success:
+  - docker login -u="$DOCKER_USER" -p="$DOCKER_PASS"
+  - export REPO=$DOCKER_USER/sniffer-transilien
+  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
+  - docker build -f Dockerfile -t $REPO:$TAG .
+  - docker push $REPO
+
