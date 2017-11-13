@@ -13,6 +13,7 @@ var (
 	lock = keylock.NewKeyLock()
 )
 
+// All state available from API (in english)
 const (
 	StateOnTime  = "on_time"
 	StateDelayed = "delayed"
@@ -43,6 +44,7 @@ func IsWeek(t time.Time) bool {
 	return true
 }
 
+// IsBan return true if station is currently ban from the puller
 func IsBan(s traincat.Station) bool {
 	return cache.IsKeyExist(cache.BuildKeyBanStation(s))
 }
