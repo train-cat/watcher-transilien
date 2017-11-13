@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"sync"
-	"syscall"
 	"os"
 	"os/signal"
+	"sync"
+	"syscall"
 
 	"github.com/train-cat/sniffer-transilien/utils"
 )
@@ -35,7 +35,7 @@ func main() {
 
 	select {
 	case <-ch:
-		fmt.Println("Gracefull quit...")
+		fmt.Println("Graceful quit...")
 		quit <- struct{}{}
 		wg.Wait()
 	}

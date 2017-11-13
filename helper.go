@@ -129,7 +129,7 @@ func createPassage(p sncf.Passage, station traincat.Station) error {
 
 	stop := traincat.StopInput{
 		Schedule: t.Format("15:04"),
-		IsWeek: IsWeek(t),
+		IsWeek:   IsWeek(t),
 	}
 
 	_, err = traincat.PostStop(station.ID, p.TrainID, stop)

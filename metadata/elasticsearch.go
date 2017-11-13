@@ -4,9 +4,9 @@ import (
 	"context"
 	"os"
 
-	"gopkg.in/olivere/elastic.v5"
 	"github.com/spf13/viper"
 	"github.com/train-cat/sniffer-transilien/utils"
+	"gopkg.in/olivere/elastic.v5"
 )
 
 type (
@@ -30,7 +30,7 @@ type (
 )
 
 var (
-	ctx = context.Background()
+	ctx    = context.Background()
 	client *elastic.Client
 
 	indexes = []indexable{}

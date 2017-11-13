@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/train-cat/sniffer-transilien/utils"
 	"github.com/train-cat/client-train-go"
+	"github.com/train-cat/sniffer-transilien/utils"
 )
 
 type (

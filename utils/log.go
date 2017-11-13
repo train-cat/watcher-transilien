@@ -13,11 +13,11 @@ var (
 )
 
 const (
-	errorLevel = iota // display when logLevel < 0
-	warningLevel      // display when logLevel < 1
-	successLevel      // display when logLevel < 2
-	infoLevel         // display when logLevel < 3
-	logLevel          // display when logLevel < 4
+	errorLevel   = iota // display when logLevel < 0
+	warningLevel        // display when logLevel < 1
+	successLevel        // display when logLevel < 2
+	infoLevel           // display when logLevel < 3
+	logLevel            // display when logLevel < 4
 )
 
 // Init logging configuration
