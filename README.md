@@ -1,6 +1,8 @@
 # sniffer-transilien
 
-Collect real time data from SNCF API (stop and train) 
+Collect real time data from SNCF API (stop and train)
+
+[![Go Report Card](https://goreportcard.com/badge/github.com/train-cat/sniffer-transilien)](https://goreportcard.com/report/github.com/train-cat/sniffer-transilien)
 
 ## Usage
 ### API SNCF
