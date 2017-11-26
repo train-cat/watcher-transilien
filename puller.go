@@ -12,6 +12,7 @@ import (
 	"github.com/train-cat/sniffer-transilien/metadata"
 	"github.com/train-cat/sniffer-transilien/sncf"
 	"github.com/train-cat/sniffer-transilien/utils"
+	"github.com/train-cat/client-train-go/filters"
 )
 
 var (
@@ -89,7 +90,11 @@ func wave(c <-chan traincat.Station) func() {
 
 func stationDistributor() (<-chan traincat.Station, error) {
 	var err error
-	stations, err = traincat.CGetAllStations()
+
+    max := 100
+	f := &filters.Station{Pagination: filters.Pagination{MaxPerPage: &max}}
+
+	stations, err = traincat.CGetAllStations(f)
 
 	if err != nil {
 		return nil, err
