@@ -84,8 +84,6 @@ func (j job) do() error {
 			break
 		}
 
-		keepTrack(passage, j.station)
-
 		schedule, err := passage.GetTime()
 
 		if err != nil {
@@ -153,21 +151,5 @@ func publish(code string, state string, station traincat.Station, schedule time.
 	case <-result.Ready():
 		_, err = result.Get(ctx)
 		return err
-	}
-}
-
-func keepTrack(p sncf.Passage, s traincat.Station) {
-	err := PersistTrain(p)
-
-	if err != nil {
-		// Don't return, if train isn't persist, it will be persist next time
-		utils.Error("PersistTrain: " + err.Error())
-	}
-
-	err = PersistPassage(p, s)
-
-	if err != nil {
-		// Don't return, if train isn't persist, it will be persist next time
-		utils.Error("PersistStop: " + err.Error())
 	}
 }
