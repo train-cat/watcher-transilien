@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/spf13/viper"
-	"github.com/train-cat/sniffer-transilien/utils"
+	"github.com/train-cat/watcher-transilien/utils"
 	"gopkg.in/olivere/elastic.v5"
 )
 

@@ -26,7 +26,7 @@ func Init() {
 	ui = wlog.AddPrefix("?", "[ERROR]", "[INFO]", "[LOG]", "", "[RUNNING]", "[SUCCESS]", "[WARNING]", ui)
 	ui = wlog.AddColor(wlog.BrightBlue, wlog.BrightRed, wlog.Cyan, wlog.Black, wlog.Black, wlog.Black, wlog.Magenta, wlog.BrightGreen, wlog.BrightYellow, ui)
 
-	levelLog = viper.GetInt("sniffer.log_level")
+	levelLog = viper.GetInt("watcher.log_level")
 }
 
 // Log is for logging debug variable or call trace

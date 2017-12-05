@@ -1,6 +1,6 @@
 FROM eraac/golang
 
-ADD sniffer-transilien /sniffer-transilien
+ADD watcher-transilien /watcher-transilien
 
-CMD ["/sniffer-transilien", "-config", "/config/config.json"]
+CMD ["/watcher-transilien", "-config", "/config/config.json"]
 

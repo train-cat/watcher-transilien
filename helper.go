@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/train-cat/client-train-go"
-	"github.com/train-cat/sniffer-transilien/cache"
-	"github.com/train-cat/sniffer-transilien/sncf"
+	"github.com/train-cat/watcher-transilien/cache"
+	"github.com/train-cat/watcher-transilien/sncf"
 	"github.com/xiaonanln/keylock"
 )
 

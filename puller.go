@@ -8,10 +8,10 @@ import (
 	"github.com/satori/go.uuid"
 	"github.com/spf13/viper"
 	"github.com/train-cat/client-train-go"
-	"github.com/train-cat/sniffer-transilien/cache"
-	"github.com/train-cat/sniffer-transilien/metadata"
-	"github.com/train-cat/sniffer-transilien/sncf"
-	"github.com/train-cat/sniffer-transilien/utils"
+	"github.com/train-cat/watcher-transilien/cache"
+	"github.com/train-cat/watcher-transilien/metadata"
+	"github.com/train-cat/watcher-transilien/sncf"
+	"github.com/train-cat/watcher-transilien/utils"
 	"github.com/train-cat/client-train-go/filters"
 )
 
@@ -25,11 +25,11 @@ var (
 )
 
 func init() {
-	limitPerWave = viper.GetInt("sniffer.max_call_per_wave")
+	limitPerWave = viper.GetInt("watcher.max_call_per_wave")
 }
 
 func pull(quit <-chan struct{}) (chan job, error) {
-	ticker := time.NewTicker(time.Second * time.Duration(viper.GetInt("sniffer.second_between_call")))
+	ticker := time.NewTicker(time.Second * time.Duration(viper.GetInt("watcher.second_between_call")))
 	cs, err := stationDistributor()
 
 	if err != nil {
@@ -74,7 +74,7 @@ func wave(c <-chan traincat.Station) func() {
 				}
 
 				if len(passages) == 0 {
-					cache.Ban(cache.BuildKeyBanStation(station), viper.GetInt("sniffer.ban.no_passage"))
+					cache.Ban(cache.BuildKeyBanStation(station), viper.GetInt("watcher.ban.no_passage"))
 					return
 				}
 

@@ -7,7 +7,7 @@ import (
 	"sync"
 	"syscall"
 
-	"github.com/train-cat/sniffer-transilien/utils"
+	"github.com/train-cat/watcher-transilien/utils"
 )
 
 func main() {

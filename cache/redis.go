@@ -7,8 +7,8 @@ import (
 	"github.com/go-redis/redis"
 	"github.com/spf13/viper"
 	"github.com/train-cat/client-train-go"
-	"github.com/train-cat/sniffer-transilien/model"
-	"github.com/train-cat/sniffer-transilien/utils"
+	"github.com/train-cat/watcher-transilien/model"
+	"github.com/train-cat/watcher-transilien/utils"
 )
 
 const (

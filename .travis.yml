@@ -8,11 +8,11 @@ services:
   - docker
 
 script:
-  - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o sniffer-transilien *.go
+  - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o watcher-transilien *.go
 
 after_success:
   - docker login -u="$DOCKER_USER" -p="$DOCKER_PASS"
-  - export REPO=traincat/sniffer-transilien
+  - export REPO=traincat/watcher-transilien
   - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
   - docker build -f Dockerfile -t $REPO:$TAG .
   - docker push $REPO

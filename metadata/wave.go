@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/train-cat/sniffer-transilien/utils"
+	"github.com/train-cat/watcher-transilien/utils"
 )
 
 type (

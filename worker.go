@@ -11,11 +11,11 @@ import (
 	"cloud.google.com/go/pubsub"
 	"github.com/spf13/viper"
 	"github.com/train-cat/client-train-go"
-	"github.com/train-cat/sniffer-transilien/cache"
-	"github.com/train-cat/sniffer-transilien/metadata"
-	"github.com/train-cat/sniffer-transilien/model"
-	"github.com/train-cat/sniffer-transilien/sncf"
-	"github.com/train-cat/sniffer-transilien/utils"
+	"github.com/train-cat/watcher-transilien/cache"
+	"github.com/train-cat/watcher-transilien/metadata"
+	"github.com/train-cat/watcher-transilien/model"
+	"github.com/train-cat/watcher-transilien/sncf"
+	"github.com/train-cat/watcher-transilien/utils"
 	"google.golang.org/api/option"
 )
 
