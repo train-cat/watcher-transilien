@@ -78,9 +78,9 @@ func consume(jobs chan job) {
 
 func (j job) do() error {
 	for _, passage := range j.passages {
-		// if station has not realtime api available persist information in database
+		// if station has not realtime ban it
 		if passage.Date.Mode == sncf.ModeTheoretical {
-			utils.Warning(fmt.Sprintf("stations %s is not realtime", j.station.Name))
+			cache.Ban(cache.BuildKeyBanStation(j.station), viper.GetInt("watcher.ban.no_real_time"))
 			break
 		}
 

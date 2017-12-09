@@ -28,7 +28,8 @@
     },
     "watcher": {
         "ban": {
-            "no_passage": 3
+            "no_passage": 3,
+            "no_real_time": 1
         },
         "max_call_per_wave": 2,
         "second_between_call": 10,
