@@ -5,12 +5,6 @@
         },
         "flush_all_on_start": false
     },
-    "elasticsearch": {
-        "host": "http://localhost:9200",
-        "basic_auth": true,
-        "username": "elastic",
-        "password": "changeme"
-    },
     "sncf_api": {
         "timezone": "Europe/Paris",
         "host": "http://api.transilien.com",

@@ -5,13 +5,11 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"net/http/httputil"
 	"os"
 	"time"
 
 	"github.com/spf13/viper"
 	"github.com/train-cat/client-train-go"
-	"github.com/train-cat/watcher-transilien/metadata"
 	"github.com/train-cat/watcher-transilien/utils"
 )
 
@@ -84,45 +82,30 @@ func addHeaders(r *http.Request) {
 	)
 }
 
-func (api *api) GetPassages(s traincat.Station, waveID string) ([]Passage, error) {
-	metadata := metadata.Request{Station: s, WaveID: waveID}
-
+func (api *api) GetPassages(s traincat.Station) ([]Passage, error) {
 	req, err := http.NewRequest(http.MethodGet, buildURI(s.UIC), nil)
 
 	if err != nil {
-		metadata.Error = err.Error()
-		metadata.Persist()
 		return nil, err
 	}
 
 	addHeaders(req)
 
-	metadata.SendAt = time.Now()
 	resp, err := api.client.Do(req)
 
 	if err != nil {
-		metadata.Error = err.Error()
-		metadata.Persist()
 		return nil, err
 	}
 
-	metadata.ResponseTime = time.Since(metadata.SendAt)
-	metadata.StatusCode = resp.StatusCode
-
 	defer resp.Body.Close()
 
-	if metadata.StatusCode != http.StatusOK {
-		bs, _ := httputil.DumpResponse(resp, true)
-		metadata.ResponseBody = string(bs[:])
-		metadata.Persist()
+	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("%s", resp.Status)
 	}
 
 	data, err := ioutil.ReadAll(resp.Body)
 
 	if err != nil {
-		metadata.Error = err.Error()
-		metadata.Persist()
 		return nil, err
 	}
 
@@ -131,13 +114,8 @@ func (api *api) GetPassages(s traincat.Station, waveID string) ([]Passage, error
 	err = xml.Unmarshal(data, &v)
 
 	if err != nil {
-		metadata.Error = err.Error()
-		metadata.Persist()
 		return nil, err
 	}
-
-	metadata.CountPassage = len(v.Passages)
-	metadata.Persist()
 
 	return v.Passages, nil
 }

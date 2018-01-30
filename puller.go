@@ -2,14 +2,11 @@ package main
 
 import (
 	"fmt"
-	"sync"
 	"time"
 
-	"github.com/satori/go.uuid"
 	"github.com/spf13/viper"
 	"github.com/train-cat/client-train-go"
 	"github.com/train-cat/watcher-transilien/cache"
-	"github.com/train-cat/watcher-transilien/metadata"
 	"github.com/train-cat/watcher-transilien/sncf"
 	"github.com/train-cat/watcher-transilien/utils"
 	"github.com/train-cat/client-train-go/filters"
@@ -57,20 +54,15 @@ func pull(quit <-chan struct{}) (chan job, error) {
 
 func wave(c <-chan traincat.Station) func() {
 	return func() {
-		wg := sync.WaitGroup{}
-		md := metadata.Wave{UUID: uuid.NewV4().String(), LaunchedAt: time.Now()}
-
 		for i := 0; i < limitPerWave; i++ {
-			wg.Add(1)
 			go func() {
-				defer wg.Done()
 
 				station := <-c
-				passages, err := sncf.API.GetPassages(station, md.UUID)
+				passages, err := sncf.API.GetPassages(station)
 
 				if err != nil {
 					utils.Error(err.Error())
-					return // error already logged in metadata.Request
+					return
 				}
 
 				if len(passages) == 0 {
@@ -78,13 +70,9 @@ func wave(c <-chan traincat.Station) func() {
 					return
 				}
 
-				cj <- job{station: station, passages: passages, UUID: md.UUID}
+				cj <- job{station: station, passages: passages}
 			}()
 		}
-
-		wg.Wait()
-		md.TimeProcess = time.Since(md.LaunchedAt)
-		md.Persist()
 	}
 }
 

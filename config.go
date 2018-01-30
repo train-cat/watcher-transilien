@@ -8,7 +8,6 @@ import (
 	"github.com/spf13/viper"
 	"github.com/train-cat/client-train-go"
 	"github.com/train-cat/watcher-transilien/cache"
-	"github.com/train-cat/watcher-transilien/metadata"
 	"github.com/train-cat/watcher-transilien/sncf"
 	"github.com/train-cat/watcher-transilien/utils"
 )
@@ -42,7 +41,6 @@ func init() {
 	// Init function should be call after viper initialisation
 	utils.Init()
 	sncf.Init()
-	metadata.Init()
 	cache.Init()
 
 	traincat.SetConfig(traincat.Config{

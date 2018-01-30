@@ -12,7 +12,6 @@ import (
 	"github.com/spf13/viper"
 	"github.com/train-cat/client-train-go"
 	"github.com/train-cat/watcher-transilien/cache"
-	"github.com/train-cat/watcher-transilien/metadata"
 	"github.com/train-cat/watcher-transilien/model"
 	"github.com/train-cat/watcher-transilien/sncf"
 	"github.com/train-cat/watcher-transilien/utils"
@@ -23,7 +22,6 @@ type (
 	job struct {
 		station  traincat.Station
 		passages []sncf.Passage
-		UUID     string
 	}
 )
 
@@ -57,17 +55,9 @@ func consume(jobs chan job) {
 			wg.Add(1)
 			defer wg.Done()
 
-			md := metadata.Job{StartAt: time.Now(), Station: j.station, WaveID: j.UUID}
-			err := j.do()
-
-			if err != nil {
+			if err := j.do(); err != nil {
 				utils.Error(err.Error())
-				md.Error = err.Error()
 			}
-
-			md.TimeProcess = time.Since(md.StartAt)
-
-			md.Persist()
 		}(sj)
 	}
 
@@ -91,17 +81,6 @@ func (j job) do() error {
 		}
 
 		state := GenerateModelState(passage.State)
-
-		mrt := &metadata.Realtime{
-			WaveID:    j.UUID,
-			CheckedAt: time.Now(),
-			State:     state,
-			Schedule:  schedule,
-			Station:   j.station,
-			Train:     metadata.Train{Code: passage.TrainID, Mission: passage.Mission},
-		}
-
-		mrt.Persist()
 
 		if state != StateOnTime {
 			err = publish(passage.TrainID, state, j.station, schedule)
